@@ -1,7 +1,8 @@
-#include <stdio.h> 
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
-// function to remove newlines from string passed to it
+// function to remove newlines from the end of a string
 
 char *remove_newline(char *s) {
 
@@ -28,13 +29,13 @@ int main(int argc, char *argv[]) {
 
   printf("Type something already:\n");
   getline(&tempstring, &bytes_read, stdin);
-    if (bytes_read == -1) { printf("ERROR\n"); return 1; }
+    if (bytes_read == -1) { printf("ERROR\n"); exit(1); }
   remove_newline(tempstring);
   strncpy(firststring, tempstring, number_of_bytes);
 
   printf("Type something again:\n");
   getline(&tempstring, &bytes_read, stdin);
-    if (bytes_read == -1) { printf("ERROR\n"); return 1; }
+    if (bytes_read == -1) { printf("ERROR\n"); exit(1); }
   remove_newline(tempstring);
   strncpy(secondstring, tempstring, number_of_bytes);
 
