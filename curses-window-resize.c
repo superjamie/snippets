@@ -3,7 +3,7 @@
 #include <curses.h>
 #include <signal.h>
 
-/* curses with window resizing
+/* ncurses window resizer
  *
  * this handles dynamic resizing of graphical terminals when ncurses is
  * drawing separate WINDOW*s instead of just using stdscr.
@@ -20,8 +20,7 @@ WINDOW *mapwin, *sidebar;
 void terminal_start();
 void terminal_stop();
 void get_window_dimensions();
-void draw_map_window();
-void draw_sidebar_window();
+void draw_window(WINDOW*, int, int, char);
 void resizehandler(int);
 
 // start c file here
@@ -51,36 +50,18 @@ void get_window_dimensions() {
 	sidebar = newwin(sidebary-1, sidebarx-1, 0, mapwinx-1);
 }
 
-/* i should probably slim these two down to a single draw_window()
- * function which takes args WINDOW x y char
- */
-
-void draw_map_window() {
+void draw_window(WINDOW* win, int height, int width, char c) {
 
 	int x, y;
-	for (y = 0; y < mapwiny-1; y++) {
-	    for (x = 0; x < mapwinx-1; x++) {
-		mvwaddch(mapwin, y, x, 'm');
+	for (y = 0; y < height-1; y++) {
+	    for (x = 0; x < width-1; x++) {
+		mvwaddch(win, y, x, c);
 	    }
 	}
 
-	wborder(mapwin, 0, 0, 0, 0, 0, 0, 0, 0);
+	wborder(win, 0, 0, 0, 0, 0, 0, 0, 0);
 
-	wrefresh(mapwin);
-}
-
-void draw_sidebar_window() {
-
-	int x, y;
-	for (y = 0; y < sidebary-1; y++) {
-	    for (x = 0; x < sidebarx-1; x++) {
-		mvwaddch(sidebar, y, x, 's');
-	    }
-	}
-
-	wborder(sidebar, 0, 0, 0, 0, 0, 0, 0, 0);
-
-	wrefresh(sidebar);
+	wrefresh(win);
 }
 
 // i stole this idea of a resize handler which just calls start and stop from stone soup - http://crawl.develz.org/
@@ -92,8 +73,8 @@ void resizehandler(int sig) {
 
 	get_window_dimensions();
 
-	draw_map_window();
-	draw_sidebar_window();
+	draw_window(mapwin, mapwiny, mapwinx, 'm');
+	draw_window(sidebar, sidebary, sidebarx, 's');
 }
 
 int main(int argc, char *argv[]) {
@@ -110,8 +91,8 @@ int main(int argc, char *argv[]) {
 	// game loop here
 	while (true) {
 
-		draw_map_window();
-		draw_sidebar_window();
+		draw_window(mapwin, mapwiny, mapwinx, 'm');
+		draw_window(sidebar, sidebary, sidebarx, 's');
 
 		// handle input
 		c = 0;
