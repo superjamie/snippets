@@ -3,7 +3,7 @@
 #include <curses.h>
 #include <signal.h>
 
-/* ncurses window resizer
+/* ncurses with window resizing
  *
  * this handles dynamic resizing of graphical terminals when ncurses is
  * drawing separate WINDOW*s instead of just using stdscr.
@@ -46,15 +46,15 @@ void get_window_dimensions() {
 	mapwinx = termx - 25;
 	mapwiny = sidebary = termy;
 
-	mapwin = newwin(mapwiny-1, mapwinx-1, 0, 0);
-	sidebar = newwin(sidebary-1, sidebarx-1, 0, mapwinx-1);
+	mapwin = newwin(mapwiny, mapwinx, 0, 0);
+	sidebar = newwin(sidebary, sidebarx, 0, mapwinx);
 }
 
 void draw_window(WINDOW* win, int height, int width, char c) {
 
 	int x, y;
-	for (y = 0; y < height-1; y++) {
-	    for (x = 0; x < width-1; x++) {
+	for (y = 0; y < height; y++) {
+	    for (x = 0; x < width; x++) {
 		mvwaddch(win, y, x, c);
 	    }
 	}
