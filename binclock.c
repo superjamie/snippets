@@ -27,9 +27,9 @@ timer_t gTimerid;
 void start_timer(void)
 {
     struct itimerspec value;
-    value.it_value.tv_sec = 1;
+    value.it_value.tv_sec = 1; // initial wait
     value.it_value.tv_nsec = 0;
-    value.it_interval.tv_sec = 1;
+    value.it_interval.tv_sec = 1; // timer interval
     value.it_interval.tv_nsec = 0;
     timer_create (CLOCK_REALTIME, NULL, &gTimerid);
     timer_settime (gTimerid, 0, &value, NULL);
@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
             int_to_binary(hour, hrstr);
 
             printf("\e[1;1H\e[2J"); // clears the screen on POSIX ANSI terminals
-            printf("\n  hr  %s (%2d)\n min %s (%2d)\n sec %s (%2d)\n""", hrstr, hour, minstr, minute, secstr, second);
+            printf("\n  hr  %s (%2d)\n min %s (%2d)\n sec %s (%2d)\n", hrstr, hour, minstr, minute, secstr, second);
 
             run = false;
         }
