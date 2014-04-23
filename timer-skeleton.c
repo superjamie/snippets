@@ -3,6 +3,9 @@
  * this is THE ONLY WAY to get something to actually happen every
  * second within the same millisecond, and not every second plus
  * a few milliseconds here or there so you eventually skip a count
+ * 
+ * don't forget to link with -lrt
+ *
  */
 
 #include <stdio.h>
