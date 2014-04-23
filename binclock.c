@@ -1,6 +1,7 @@
 /* binary clock
  * 
  * an accurate binary clock
+ * gcc -Wall -g binclock.c -lrt -o binclock
  * 
  */
 
