@@ -1,4 +1,3 @@
-c-snippets
-==========
+## snippets
 
-Snippets of C code which may or may not be useful.
+Snippets of code which may or may not be useful.
