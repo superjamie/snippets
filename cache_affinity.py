@@ -10,7 +10,7 @@ import glob, os, re, sys
 
 nr_cpus = 0
 
-for line in open('/proc/cpuinfo', 'r'):
+for line in open("/proc/cpuinfo"):
     if re.search("processor", line):
         nr_cpus += 1
 
@@ -23,8 +23,7 @@ for cpu in range(nr_cpus):
                 f = open(name)
                 text = f.readline()
                 f.close()
-                text = text.rstrip()
-                print "{level} {file} is {text}".format(level=level, file=file, text=text)
+                print "{level} {file} is {text}".format(level=level, file=file, text=text.rstrip())
 
 indexes = len(glob.glob("/sys/devices/system/cpu/cpu0/cache/index*"))
 
@@ -36,5 +35,4 @@ for cpu in range(nr_cpus):
             f = open(name)
             text = f.readline()
             f.close()
-            text = text.rstrip()
-            print "CPU {cpu}, Index {index} = {text}".format(cpu=cpu, index=index, text=text)
+            print "CPU {cpu}, Index {index} = {text}".format(cpu=cpu, index=index, text=text.rstrip())
