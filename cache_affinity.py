@@ -21,8 +21,7 @@ for cpu in range(nr_cpus):
             name = "/sys/devices/system/cpu/cpu{cpu}/cache/{level}/{file}".format(cpu=cpu, level=level, file=file)
             if os.path.exists(name):
                 with open(name) as f:
-                    text = f.readline()
-                    print " {level} {file} is {text}".format(level=level, file=file, text=text.rstrip())
+                    print " {level} {file} is {text}".format(level=level, file=file, text=f.readline().rstrip())
 
 for cpu in range(nr_cpus):
     print "Processor {cpu}".format(cpu=cpu)
@@ -30,5 +29,4 @@ for cpu in range(nr_cpus):
         name = "/sys/devices/system/cpu/cpu{cpu}/cache/index{index}/shared_cpu_map".format(cpu=cpu, index=index)
         if os.path.exists(name):
             with open(name) as f:
-                text = f.readline()
-                print " CPU {cpu}, Index {index} = {text}".format(cpu=cpu, index=index, text=text.rstrip())
+                print " CPU {cpu}, Index {index} = {text}".format(cpu=cpu, index=index, text=f.readline().rstrip())
