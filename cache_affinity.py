@@ -23,7 +23,7 @@ for cpu in range(nr_cpus):
                 f = open(name)
                 text = f.readline()
                 f.close()
-                print "{level} {file} is {text}".format(level=level, file=file, text=text.rstrip())
+                print " {level} {file} is {text}".format(level=level, file=file, text=text.rstrip())
 
 for cpu in range(nr_cpus):
     print "Processor {cpu}".format(cpu=cpu)
@@ -33,4 +33,4 @@ for cpu in range(nr_cpus):
             f = open(name)
             text = f.readline()
             f.close()
-            print "CPU {cpu}, Index {index} = {text}".format(cpu=cpu, index=index, text=text.rstrip())
+            print " CPU {cpu}, Index {index} = {text}".format(cpu=cpu, index=index, text=text.rstrip())
