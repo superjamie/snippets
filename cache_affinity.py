@@ -6,7 +6,7 @@
 # cache level is shared with.
 #
 
-import glob, os, re, sys
+import glob, os, re
 
 nr_cpus = 0
 
