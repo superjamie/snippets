@@ -25,11 +25,9 @@ for cpu in range(nr_cpus):
                 f.close()
                 print "{level} {file} is {text}".format(level=level, file=file, text=text.rstrip())
 
-indexes = len(glob.glob("/sys/devices/system/cpu/cpu0/cache/index*"))
-
 for cpu in range(nr_cpus):
     print "Processor {cpu}".format(cpu=cpu)
-    for index in range(indexes):
+    for index in range(len(glob.glob("/sys/devices/system/cpu/cpu0/cache/index*"))):
         name = "/sys/devices/system/cpu/cpu{cpu}/cache/index{index}/shared_cpu_map".format(cpu=cpu, index=index)
         if os.path.exists(name):
             f = open(name)
