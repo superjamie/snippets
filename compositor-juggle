@@ -1,0 +1,38 @@
+#!/bin/bash
+#
+# compositor-juggle
+#
+# runs the compositor if not running
+# kills the compositor if running
+# 
+COMPOSITOR=xcompmgr
+
+notify() {
+    case "$1" in
+        "running")
+            ICON=emblem-default
+            ;;
+        "killing")
+            ICON=stop
+            ;;
+        *)
+            ICON=emblem-unreadable
+            ;;
+    esac
+    notify-send --icon="$ICON" --expire-time=1000 "compositor" "$1 $2"
+}
+
+juggle() {
+    if [ $(pgrep -c "$1") -eq 0 ];
+    then
+     # compositor isn't running
+     "$1" &
+     notify "running" "$1"
+    else
+     # compositor is running
+     killall "$1"
+     notify "killing" "$1"
+    fi
+}
+
+juggle "$COMPOSITOR"
