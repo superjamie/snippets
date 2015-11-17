@@ -8,7 +8,7 @@
 #define DEBUG // do we want debugging? if not, comment this define out
 
 #ifdef DEBUG  // if debugging is enabled
-# define DEBUG_PRINT(x) printf x  // make DEBUG_PRINT do a printf
+# define DEBUG_PRINT(x) printf(x)  // make DEBUG_PRINT do a printf
 #else
 # define DEBUG_PRINT(x) do {} while (0)  // otherwise make DEBUG_PRINT do nothing
 #endif
@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
 
   printf("First standard line.\n");  // this prints every time the program runs
   if (debug_print) { printf("Debug line with --debug at runtime.\n"); }  // here's our runtime debug print
-  DEBUG_PRINT(("Debug line with DEBUG at compile time.\n"));  // heres our macro debug print
+  DEBUG_PRINT("Debug line with DEBUG at compile time.\n");  // heres our macro debug print
   printf("Second standard line.\n");  // this prints every time the program runs
 
   return 0;
