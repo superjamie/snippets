@@ -7,9 +7,10 @@
 # License: GPLv3
 # Authors: jamie.bainbridge@gmail.com
 
-if [ "$EUID" -ne 0 ]; then
+if [ "$EUID" -ne 0 ]
+then
     echo "* [ERROR] Run this script under 'sudo -s' or as root"
-    exit 1;
+    exit 1
 fi
 
 CARDPATH="/sys/class/drm/card0/device"
