@@ -4,6 +4,8 @@
 # Script to control radeon DPM power saving, run as root
 # Ref: https://wiki.archlinux.org/index.php/ATI#Powersaving
 # Version: 2016-05-08
+# License: GPLv3
+# Authors: jamie.bainbridge@gmail.com
 
 if [ "$EUID" -ne 0 ]; then
     echo "* [ERROR] Run this script under 'sudo -s' or as root"
