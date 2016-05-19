@@ -10,11 +10,11 @@
 # for example, dimension = 5 will make every 5x5 image
 dimension = 3
 
-number_of_images = ((2**dimension)**dimension) - 1
-namepadlen = len(str(number_of_images))
-pixpadlen = len(str(bin(number_of_images)[2:]))
+number_of_images = ((2**dimension)**dimension)
+namepadlen = len(str(number_of_images - 1))
+pixpadlen = len(str(bin(number_of_images - 1)[2:]))
 
-for imagenum in range(number_of_images+1):
+for imagenum in range(number_of_images):
     filename = "img" + str(imagenum).zfill(namepadlen) + ".ppm"
     file = open(filename, "w")
     file.write("P3 {0} {0} 1".format(dimension))
