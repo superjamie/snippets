@@ -19,7 +19,7 @@ do
 done
 
 # check we actually found a URL
-if [[ "$(echo "$AUDIOURL" | egrep -c "^https?\:\/\/")" -gt 0 ]]
+if [[ "$(echo "$AUDIOURL" | egrep -c "^https?\:\/\/")" -gt "0" ]]
 then
     #echo "AUDIOURL: $AUDIOURL"
     mpc add "$AUDIOURL"
