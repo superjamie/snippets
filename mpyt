@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# script to take a youtube video url and add it to the running mpd
+# requires: mpc, mpd, youtube-dl
+
+if [[ "$#" -lt "1" ]] || [[ "$(echo "$1" | egrep -c "^https?\:\/\/")" == "0" ]]
+then
+    ME="$(basename "$0")"
+    echo " $ME: adds a youtube url to mpd playlist"
+    echo " Usage: $ME [youtube-url]"
+    exit 1
+fi
+
+# http://www.genyoutube.net/formats-resolution-youtube-videos.html
+for fmt in {139..141}
+do
+    AUDIOURL=$(youtube-dl -f "$fmt" -g "$1" 2>/dev/null)
+    if [[ "$?" == "0" ]]; then break; fi
+done
+
+# check we actually found a URL
+if [[ "$(echo "$AUDIOURL" | egrep -c "^https?\:\/\/")" -gt 0 ]]
+then
+    #echo "AUDIOURL: $AUDIOURL"
+    mpc add "$AUDIOURL"
+    mpc play
+else
+    echo "[ERROR] Couldn't find audio stream for $1"
+    exit 1
+fi
