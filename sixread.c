@@ -20,8 +20,6 @@
 #define USB_DIR_IN 0x80
 #define USB_DIR_OUT 0
 
-void fatal(char *msg) { perror(msg); exit(1); }
-
 void fatal(char *msg)
 {
 	perror(msg);
