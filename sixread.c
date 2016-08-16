@@ -71,7 +71,7 @@ void show_bdaddr(usb_dev_handle *devh, int itfnum)
 		return;
 	}
 	printf("%02x:%02x:%02x:%02x:%02x:%02x\n",
-	    msg[2], msg[3], msg[4], msg[5], msg[6], msg[7]);
+	    msg[4], msg[5], msg[6], msg[7], msg[8], msg[9]);
 }
 
 void process_device(int argc, char **argv, struct usb_device *dev,
