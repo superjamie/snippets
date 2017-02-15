@@ -15,7 +15,7 @@ except:
     # if the user has not passed 3 arguments, an exception is raised
     # so we print the usage message and quit"
     print "Creates a number of dirs and a number of unique files in each dir"
-    print "Usage: {} [number of dirs] [number of files]".format(argv[0])
+    print "Usage: {} [number of dirs] [number of files]".format(sys.argv[0])
     sys.exit()
 
 # for each directory number (this starts at 0, we'll add 1 later)
@@ -28,11 +28,8 @@ for dirnum in range(int(numdirs)):
     for filenum in range(int(numfiles)):
         # create a full filename called "testdir-X/testfile-Y" starting a file 1
         filename = "{}/testfile-{}".format(dirname, filenum + 1)
-        # open the file for writing
-        file = open(filename, "w")
-        # write the full filename into the file (which is unique)
-        file.write(filename)
-        # write urandom into the file (which may not be unique)
-        file.write(os.urandom(512 * 5))
-        # close the file
-        file.close
+        with open(filename, "w") as file:
+                # write the full filename into the file (which is unique)
+                file.write(filename)
+                # write urandom into the file (which may not be unique)
+                file.write(os.urandom(512 * 5))
