@@ -11,9 +11,9 @@ try:
     # assign the second argument (argv[1]) to "numdirs"
     # assign the third argument (argv[2]) to "numfiles"
     scriptname, numdirs, numfiles = sys.argv
-except:
-    # if the user has not passed 3 arguments, an exception is raised
-    # so we print the usage message and quit"
+except ValueError:
+    # if the user has not passed 3 arguments, a ValueError exception is raised
+    # so we print the usage message and quit
     print "Creates a number of dirs and a number of unique files in each dir"
     print "Usage: {} [number of dirs] [number of files]".format(sys.argv[0])
     sys.exit()
