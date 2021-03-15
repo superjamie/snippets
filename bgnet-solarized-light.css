@@ -1,0 +1,57 @@
+/* ==UserStyle==
+@name         bgnet - Solarized Light
+@namespace    https://beej.us/guide/bgnet/
+@version      1.0.0
+@license      CC0-1.0
+@author       Jamie Bainbridge <jamie.bainbridge@gmail.com>
+==/UserStyle== */
+
+:root {
+  --base03: #002b36;
+  --base02: #073642;
+  --base01: #586e75;
+  --base00: #657b83;
+  --base0: #839496;
+  --base1: #93a1a1;
+  --base2: #eee8d5;
+  --base3: #fdf6e3;
+  --yellow: #b58900;
+  --orange: #cb4b16;
+  --red: #dc322f;
+  --magenta: #d33682;
+  --violet: #6c71c4;
+  --blue: #268bd2;
+  --cyan: #2aa198;
+  --green: #859900;
+}
+
+html { background-color: var(--base03); }
+body { background-color: var(--base2); color: var(--base02); max-width: 67%; }
+blockquote { color: var(--base01); }
+
+a:link { color: var(--green); }
+a:visited { color: var(--base0); }
+
+code { padding: 3px; }
+code, pre, pre.sourceCode { background-color: var(--base3); }
+code span.al { color: var(--red); font-weight: bold; } /* Alert */
+code span.bn { color: var(--blue); } /* BaseN */
+code span.cf { color: var(--green); font-weight: bold; } /* ControlFlow */
+code span.ch { color: var(--blue); } /* Char */
+code span.co { color: var(--cyan); font-style: italic; } /* Comment */
+code span.dt { color: var(--red); } /* DataType */
+code span.dv { color: var(--blue); } /* DecVal */
+code span.er { color: var(--red); font-weight: bold; } /* Error */
+code span.fl { color: var(--blue) } /* Float */
+code span.in { color: var(--cyan); font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: var(--green); font-weight: bold; } /* Keyword */
+code span.op { color: var(--orange) } /* Operator */
+code span.pp { color: var(--yellow); } /* Preprocessor */
+code span.sc { color: var(--violet); } /* SpecialChar */
+code span.st { color: var(--magenta); } /* String */
+
+/* fall thru to "code" text color
+code span.bu { } /* BuiltIn
+code span.im { } /* Import
+code span.re { } /* Region
+*/
