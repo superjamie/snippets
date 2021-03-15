@@ -1,3 +1,4 @@
+@-moz-document url-prefix("https://beej.us/guide/bgnet/") {
 /* ==UserStyle==
 @name         bgnet - Solarized Light
 @namespace    https://beej.us/guide/bgnet/
@@ -55,3 +56,5 @@ code span.bu { } /* BuiltIn
 code span.im { } /* Import
 code span.re { } /* Region
 */
+
+}
