@@ -1,0 +1,37 @@
+# Makefile template for small simple projects
+SRCS = main.c other.c
+EXEC = execname
+OBJS = $(SRCS:.c=.o)
+DEPS = main.h other.h
+# note: this will recompile every object whenever a DEPS header changes
+# i guess you could also use %.h instead of $(DEPS) below?
+
+CC = gcc
+CFLAGS = -g -Wall -c
+# to pass an include path to the compiler: -I./
+LIBDIR = -L./
+LFLAGS = -lnameoflibrary
+# to pass a binary path to the linker: -Wl,-rpath,./
+
+all: $(EXEC)
+
+$(EXEC): $(OBJS)
+	$(CC) $(OBJS) -o $@ $(LIBDIR) $(LFLAGS)
+
+%.o:%.c $(DEPS)
+	$(CC) $(CFLAGS) $< -o $@
+
+# $@ is the left side of the :
+# $^ is the right side of the :
+# the $< is the first item in the dependencies list
+# $@: $< $^
+
+.PHONY: clean oclean release
+
+clean:
+	rm -f $(OBJS) $(EXEC)
+
+oclean:
+	rm -f $(OBJS)
+
+release: all oclean
