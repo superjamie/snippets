@@ -1,0 +1,119 @@
+/* ==UserStyle==
+@name           6502 Dark
+@author         superjamie
+@version        1.0
+@license        CC0
+==/UserStyle== */
+@namespace url(http://www.w3.org/1999/xhtml);
+
+@-moz-document domain("6502.org") {
+  :root {
+      --color-base03: #002b36;
+      --color-base03l: #002f3a;
+      --color-base02d: #00323e;
+      --color-base02: #073642;
+      --color-base01: #586e75;
+      --color-base00: #657b83;
+      --color-base0: #839496;
+      --color-base1: #93a1a1;
+      --color-base2: #eee8d5;
+      --color-base25: #faeedc;
+      --color-base3: #fdf6e3;
+      --color-yellow: #b58900;
+      --color-orange: #cb4b16;
+      --color-red: #dc322f;
+      --color-magenta: #d33682;
+      --color-violet: #6c71c4;
+      --color-blue: #268bd2;
+      --color-cyan: #2aa198;
+      --color-green: #859900;
+
+  }
+
+  :root {
+      --fg-primary: var(--color-base0);
+      --bg-primary: var(--color-base03);
+
+      --fg-secondary: var(--color-base0);
+      --bg-secondary: var(--color-base02);
+
+      --border-primary: var(--color-base01);
+      --border-secondary: var(--color-base02);
+
+      --box-fg: var(--color-base1);
+      --box-bg: var(--color-base02);
+
+      --button-fg: var(--color-base1);
+      --button-bg: var(--color-base02);
+      --button-hover: var(--color-base03l);
+      --button-border: var(--color-base03l);
+
+      --input-fg: var(--color-base0);
+      --input-bg: var(--color-base02);
+      --input-border: var(--color-base03l);
+  }
+
+/* TODO: Integrate https://thomasf.github.io/solarized-css/solarized-dark.css */
+
+  html * {
+      background: var(--bg-primary) !important;
+      color: var(--fg-primary) !important;
+  }
+
+  main * {
+      background: var(--bg-primary) !important;
+      color: var(--fg-primary) !important;
+  }
+
+  body {
+      border-top: none;
+      border-bottom: none;
+      background: var(--bg-primary) !important;
+      color: var(--fg-primary) !important;
+  }
+
+  p {
+      background: var(--bg-primary) !important;
+      color: var(--fg-primary) !important;
+  }
+
+  div * {
+      background: var(--bg-primary) !important;
+      color: var(--fg-primary) !important;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
+      color: var(--fg-primary) !important;
+  }
+
+  section * {
+      color: var(--fg-primary) !important;
+  }
+
+  a {
+      color: var(--color-cyan) !important;
+  }
+
+  a:visited {
+      color: var(--color-blue) !important;
+  }
+
+  button {
+      color: var(--color-cyan) !important;
+  }
+
+  button * {
+      color: var(--color-cyan) !important;
+  }
+
+  code,pre {
+      background-color: var(--bg-secondary) !important;
+      color: var(--fg-secondary) !important;
+      padding: 2px;
+  }
+
+}
