@@ -3,10 +3,11 @@ SRCS = $(wildcard *.c)
 EXEC = execname
 
 CC = gcc
-CFLAGS = -c -g -Wall -Wextra -Wpedantic
-# to pass an include path to the compiler, add: -I./
-LDIR = -L./
-LFLAGS = -flto -lnameoflibrary
+CFLAGS = -c -g -std=c99 -Wall -Wextra -Wpedantic
+# to pass an include path to the compiler: -I./
+LDIR =
+# to pass a library path to the linker: -L./
+LFLAGS = -flto -no-pie -lnameoflibrary
 # to pass a binary path to the linker: -Wl,-rpath,./
 OBJS = $(SRCS:.c=.o)
 
@@ -23,7 +24,10 @@ $(EXEC): $(OBJS)
 # the $< is the first item in the dependencies list
 # $@: $< $^
 
-.PHONY: clean oclean release
+.PHONY: check clean oclean release
+
+check: $(SRCS)
+	cppcheck --enable=all --std=c99 --suppress=missingIncludeSystem $^
 
 clean: oclean
 	rm -f $(EXEC)
