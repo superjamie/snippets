@@ -1,33 +1,31 @@
 # Makefile template for small simple projects
-SRCS = $(wildcard *.c)
 EXEC = execname
 
 CC = gcc
-CFLAGS = -c -g -std=c99 -Wall -Wextra -Wpedantic
+CFLAGS = -g -std=c99 -Wall -Wextra -Wpedantic
 # to pass an include path to the compiler: -I./
-LDIR =
+LDFLAGS = -no-pie
 # to pass a library path to the linker: -L./
-LFLAGS = -flto -no-pie -lnameoflibrary
 # to pass a binary path to the linker: -Wl,-rpath,./
+LDLIBS = -lcurses -lm
+
+SRCS = $(wildcard *.c)
 OBJS = $(SRCS:.c=.o)
 
+# if you have a file named as the execname, that is a sufficient target to
+# compile the entire project. eg: execname and execname.c
 all: $(EXEC)
 
 $(EXEC): $(OBJS)
-	$(CC) $(OBJS) -o $@ $(LDIR) $(LFLAGS)
 
 %.o:%.c %.h
-	$(CC) $(CFLAGS) $< -o $@
 
+# $@: $< $^
 # $@ is the left side of the :
 # $^ is the right side of the :
 # the $< is the first item in the dependencies list
-# $@: $< $^
 
-.PHONY: check clean oclean release
-
-check: $(SRCS)
-	cppcheck --enable=all --std=c99 --suppress=missingIncludeSystem $^
+.PHONY: clean oclean release check debug
 
 clean: oclean
 	rm -f $(EXEC)
@@ -36,3 +34,12 @@ oclean:
 	rm -f $(OBJS)
 
 release: all oclean
+
+check: $(SRCS)
+	cppcheck --enable=all --std=c99 --suppress=missingIncludeSystem $^
+
+debug:
+	sudo sysctl -w kernel.yama.ptrace_scope=0
+
+#vim: set noexpandtab sw=8 ts=8 tw=80:
+
