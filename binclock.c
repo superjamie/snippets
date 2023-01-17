@@ -1,8 +1,7 @@
 /* binary clock
- * 
+ *
  * an accurate binary clock
- * gcc -Wall -g binclock.c -lrt -o binclock
- * 
+ * gcc -Wall -Wextra -Wpedantic -std=gnu18 -g binclock.c -lrt -o binclock
  */
 
 #include <stdio.h>      // printf, etc
@@ -13,7 +12,7 @@
 
 // prototypes
 
-void int_to_binary(int, char*);
+void int_to_binary(int, char*, size_t);
 void start_timer(void);
 void stop_timer(void);
 void timer_callback(int);
@@ -21,84 +20,93 @@ void timer_callback(int);
 // source
 
 volatile sig_atomic_t run = false;
-timer_t gTimerid;
+timer_t global_timer;
 
 // http://www.linuxquestions.org/questions/programming-9/c-timer_create-skeleton-922654/
 
+/* start a timer which fires every second, sending SIGALRM to the process */
 void start_timer(void)
 {
-    struct itimerspec value;
-    value.it_value.tv_sec = 1; // initial wait
-    value.it_value.tv_nsec = 0;
-    value.it_interval.tv_sec = 1; // timer interval
-    value.it_interval.tv_nsec = 0;
-    timer_create (CLOCK_REALTIME, NULL, &gTimerid);
-    timer_settime (gTimerid, 0, &value, NULL);
+	struct itimerspec value = { 0 };
+	value.it_value.tv_sec = 1; // initial wait
+	value.it_value.tv_nsec = 0;
+	value.it_interval.tv_sec = 1; // timer interval
+	value.it_interval.tv_nsec = 0;
+	timer_create(CLOCK_REALTIME, NULL, &global_timer);
+	timer_settime(global_timer, 0, &value, NULL);
 }
 
 void stop_timer(void)
 {
-    struct itimerspec value;
-    value.it_value.tv_sec = 0;
-    value.it_value.tv_nsec = 0;
-    value.it_interval.tv_sec = 0;
-    value.it_interval.tv_nsec = 0;
-    timer_settime (gTimerid, 0, &value, NULL);
+	struct itimerspec value = { 0 };
+	value.it_value.tv_sec = 0;
+	value.it_value.tv_nsec = 0;
+	value.it_interval.tv_sec = 0;
+	value.it_interval.tv_nsec = 0;
+	timer_settime(global_timer, 0, &value, NULL);
 }
 
-void timer_callback(int sig)
+void timer_callback(__attribute__((unused)) int sig)
 {
-    run = true;
+	run = true;
 }
 
-void int_to_binary(int number, char *word)
+void int_to_binary(int number, char *word, size_t wordlen)
 {
-    int i = 0, len = 0, place = 0;
-    len = strlen(word);
-    for(i = len; i >= 0; i--)
-    {
-        place = number >> i;
-        if (place & 1)
-            //printf("1");
-            word[len-i-1] = '1';
-        else
-            //printf("0");
-            word[len-i-1] = '0';
-    }
+	/* skip the null terminator */
+	wordlen -= 1;
+
+	/* loop backwards through the string */
+	/*
+	for (int i = wordlen; i > 0; i--)
+		if ((number >> (i - 1)) & 1)
+			word[wordlen - i] = '1';
+		else
+			word[wordlen - i] = '0';
+	*/
+
+	/* loop forwards through the string */
+	for (size_t i = 0; i < wordlen; i++)
+		if ((number >> i) & 1)
+			word[wordlen - i - 1] = '1';
+		else
+			word[wordlen - i - 1] = '0';
 }
 
-int main(int argc, char *argv[])
+#define WORDBUF 7
+int main(void)
 {
-    time_t rawtime;
-    struct tm * actualtime;
-    char secstr[6] = "000000";
-    char minstr[6] = "000000";
-    char  hrstr[5] =  "00000";
+	time_t rawtime = 0;
+	struct tm *actualtime = NULL;
+	char secstr[WORDBUF] = "000000";
+	char minstr[WORDBUF] = "000000";
+	char  hrstr[WORDBUF] = "000000";
 
-    (void) signal(SIGALRM, timer_callback);
-    start_timer();
+	/* register a handler for SIGALRM, which runs the timer callback */
+	/* TODO: as per signal(2) change this to sigaction(2) instead */
+	(void) signal(SIGALRM, timer_callback);
+	start_timer();
 
-    while(true)
-    {
-        if(run)
-        {
-            time(&rawtime);
-            actualtime = localtime(&rawtime);
+	while(true)
+	{
+		if(run)
+		{
+			time(&rawtime);
+			actualtime = localtime(&rawtime);
 
-            int hour = actualtime->tm_hour;
-            int minute = actualtime->tm_min;
-            int second = actualtime->tm_sec;
+			int_to_binary(actualtime->tm_sec, secstr, WORDBUF);
+			int_to_binary(actualtime->tm_min, minstr, WORDBUF);
+			int_to_binary(actualtime->tm_hour, hrstr, WORDBUF);
 
-            int_to_binary(second, secstr);
-            int_to_binary(minute, minstr);
-            int_to_binary(hour, hrstr);
+			// clear screen on POSIX ANSI terminals
+			printf("\e[1;1H\e[2J\n");
+			printf(" hr  %s (%2d)\n", hrstr, actualtime->tm_hour);
+			printf(" min %s (%2d)\n", minstr, actualtime->tm_min);
+			printf(" sec %s (%2d)\n", secstr, actualtime->tm_sec);
 
-            printf("\e[1;1H\e[2J"); // clears the screen on POSIX ANSI terminals
-            printf("\n  hr  %s (%2d)\n min %s (%2d)\n sec %s (%2d)\n", hrstr, hour, minstr, minute, secstr, second);
+			run = false;
+		}
+	}
 
-            run = false;
-        }
-    }
-
-    return 0;
+	return 0;
 }
