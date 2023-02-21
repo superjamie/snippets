@@ -1,37 +1,51 @@
 # Makefile template for small simple projects
 EXEC = execname
 
-CC = gcc
-CFLAGS = -g -std=c99 -Wall -Wextra -Wpedantic
-# to pass an include path to the compiler: -I./
-LDFLAGS = -no-pie
-# to pass a library path to the linker: -L./
-# to pass a binary path to the linker: -Wl,-rpath,./
-LDLIBS = -lcurses -lm
+DEPS      = # static files like assets
+SOURCES   = $(wildcard *.c)
+OBJECTS   = $(SOURCES:.c=.o)
+HEADERS   = $(wildcard *.h)
+INCLUDES  = # additional headers, maybe in includes/
 
-SRCS = $(wildcard *.c)
-OBJS = $(SRCS:.c=.o)
+CC        = gcc
+CFLAGS    = -std=c99 -Wall -Wextra -Wpedantic -Wmissing-prototypes -Iinclude/
+CFLAGS   += $(shell pkg-config --cflags LIBNAME)
+LDFLAGS   =
+LDLIBS    =
+LDLIBS   += $(shell pkg-config --libs LIBNAME)
+
+AFLAGS    = -fanalyzer -fsanitize=address,leak,undefined -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3
+
+ifdef RELEASE
+	CFLAGS  += -O2
+else
+	CFLAGS  += -g3 -O0 $(AFLAGS)
+	LDFLAGS += $(AFLAGS)
+endif
 
 # if you have a file named as the execname, that is a sufficient target to
 # compile the entire project. eg: execname and execname.c
-all: $(EXEC)
+all: $(EXEC) $(HEADERS) $(INCLUDES)
+#	$(LINK.c) $^ $(LDLIBS) $(OUTPUT_OPTION)
 
-$(EXEC): $(OBJS)
+$(EXEC): $(OBJECTS)
+	$(CC) $(LDFLAGS) $^ $(LOADLIBES) $(LDLIBS) -o $(EXEC)
 
-%.o:%.c %.h
+#%.o: %.c %.h $(DEPS)
+#	$(COMPILE.c) $(OUTPUT_OPTION) $<
 
 # $@: $< $^
 # $@ is the left side of the :
 # $^ is the right side of the :
 # the $< is the first item in the dependencies list
 
-.PHONY: clean oclean release check debug
+.PHONY: check clean oclean release check debug
 
 clean: oclean
 	rm -f $(EXEC)
 
 oclean:
-	rm -f $(OBJS)
+	rm -f *.o
 
 release: all oclean
 
@@ -42,4 +56,3 @@ debug:
 	sudo sysctl -w kernel.yama.ptrace_scope=0
 
 #vim: set noexpandtab sw=8 ts=8 tw=80:
-
