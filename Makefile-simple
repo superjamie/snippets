@@ -8,18 +8,20 @@ HEADERS   = $(wildcard *.h)
 INCLUDES  = # additional headers, maybe in includes/
 
 CC        = gcc
-CFLAGS    = -std=c99 -Wall -Wextra -Wpedantic -Wmissing-prototypes -Iinclude/
+CFLAGS    = -fanalyzer -fno-omit-frame-pointer -std=c11
+CFLAGS   += -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3
+CFLAGS   += -Wall -Wextra -Wpedantic -Wformat -Wmissing-prototypes -Werror=vla
 CFLAGS   += $(shell pkg-config --cflags LIBNAME)
 LDFLAGS   =
 LDLIBS    =
 LDLIBS   += $(shell pkg-config --libs LIBNAME)
 
-AFLAGS    = -fanalyzer -fsanitize=address,leak,undefined -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3
+AFLAGS    = -fsanitize=address,leak,undefined
 
 ifdef RELEASE
 	CFLAGS  += -O2
 else
-	CFLAGS  += -g3 -O0 $(AFLAGS)
+	CFLAGS  += -g3 -Og $(AFLAGS)
 	LDFLAGS += $(AFLAGS)
 endif
 
@@ -50,7 +52,9 @@ oclean:
 release: all oclean
 
 check: $(SRCS)
-	cppcheck --enable=all --std=c99 --suppress=missingIncludeSystem $^
+	cppcheck --enable=all --std=c11 --inline-suppr \
+		--suppress=missingIncludeSystem $^
+	codespell $^
 
 debug:
 	sudo sysctl -w kernel.yama.ptrace_scope=0
