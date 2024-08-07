@@ -1,55 +1,85 @@
 ## Makefile template
-# place source and header files in ./src/
+# place source and header files in src/
 # place library files in ./
-# place headers to include in ./include/
-# objects will be built in ./build/
+# objects will be built in obj/
 # exec will be generated in ./
-#
+
 ## you probably want to change these
-# source files to compile
-SRCS = main.c other.c
 # executable name to compile to
 EXEC = executablename
-# header files
-DEPS = main.h other.h
+
+# libraries in use
+LDLIBS    = -lm
+LDLIBS   += $(shell pkg-config --libs sdl2)
 
 ## you might want to change these
 # compiler and linker
-CC = gcc
+CC        = gcc
 # compiler flags
-CFLAGS = -g -Wall -c -Iinclude
-# library directory
-LIBDIR=-L./
+CFLAGS    = -fno-omit-frame-pointer -std=c11 -Wall -Wextra -Wpedantic
+CFLAGS   += -Wformat -Wmissing-prototypes -Wshadow -Werror=vla
+CFLAGS   += -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3
+CFLAGS   += $(shell pkg-config --cflags sdl2)
 # linker flags
-LFLAGS=-lnameoflibrary -Wl,-rpath,./
+LDFLAGS   = -Wl,-rpath -Wl,/usr/local/lib
 
+SANFLAGS  = -fsanitize=address,leak,undefined
+
+# bear -- make BEAR=1
+# clangd doesn't like -fanalyzer because clang's flag is -Xanalyzer
+ifndef BEAR
+CFLAGS   += -fanalyzer
+endif
+AFLAGS    = -fsanitize=address,leak,undefined
+ifdef RELEASE
+	CFLAGS  += -O2
+else
+	CFLAGS  += -g3 -Og $(SANFLAGS)
+	LDFLAGS += $(SANFLAGS)
+endif
 ## dont change these
-# directory with all the source in it
-VPATH = src
-# directory to place objects in
-OBJDIR = build
-# take source filenames and create object filenames from them
-OBJS = $(addprefix $(OBJDIR)/,$(SRCS:.c=.o))
+SRCDIR   = src
+OBJDIR   = obj
+SOURCES  = $(wildcard $(SRCDIR)/*.c)
+OBJECTS  = $(patsubst $(SRCDIR)/%.c,$(OBJDIR)/%.o,$(SOURCES))
+HEADERS  = $(wildcard $(SRCDIR)/*.h)
 
 # the first target is run when we type "make"
 
 # the dependencies on sources and executable force us to compile those things first
-all: $(SRCS) $(EXEC)
+all: $(EXEC)
 
 # the executable depends on the objects, so we go to compile them first
-$(EXEC): $(OBJS)
-	$(CC) $(LIBDIR) $(OBJS) -o $@ $(LFLAGS)
+$(EXEC): $(OBJECTS)
+	$(CC) $(LDFLAGS) $^ $(LOADLIBES) $(LDLIBS) -o $(EXEC)
 
 # this finds all source files and compiles them into objects in the object dir
-$(OBJDIR)/%.o:%.c $(DEPS)
-	$(CC) $(CFLAGS) $< -o $@
+$(OBJDIR)/%.o: $(SRCDIR)/%.c | $(OBJDIR)
+	$(COMPILE.c) $(OUTPUT_OPTION) $<
+
+# create object dir if it doesn't exist
+$(OBJDIR):
+	mkdir -p $@
 
 # $@ is the left side of the :
 # $^ is the right side of the :
 # the $< is the first item in the dependencies list
 # $@: $< $^
 
-.PHONY: clean
+.PHONY: clean oclean release remake check test
 
-clean:
-	rm -f $(OBJS) $(EXEC)
+clean: oclean
+	rm -f $(EXEC)
+
+oclean:
+	rm -f $(OBJDIR)/*.o
+
+release: all oclean
+
+remake: clean all
+
+check: $(SOURCES) $(HEADERS)
+	cppcheck --enable=all --std=c11 --inline-suppr \
+		--suppress=missingIncludeSystem $^
+	codespell $^
+

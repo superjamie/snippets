@@ -8,21 +8,24 @@ HEADERS   = $(wildcard *.h)
 INCLUDES  = # additional headers, maybe in includes/
 
 CC        = gcc
-CFLAGS    = -fanalyzer -fno-omit-frame-pointer -std=c11
+CFLAGS    = -fno-omit-frame-pointer -std=c11 -Wall -Wextra -Wpedantic
+CFLAGS   += -Wmissing-prototypes -Wshadow -Werror=vla
 CFLAGS   += -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3
-CFLAGS   += -Wall -Wextra -Wpedantic -Wformat -Wmissing-prototypes -Werror=vla
 CFLAGS   += $(shell pkg-config --cflags LIBNAME)
 LDFLAGS   =
 LDLIBS    =
 LDLIBS   += $(shell pkg-config --libs LIBNAME)
 
-AFLAGS    = -fsanitize=address,leak,undefined
+SANFLAGS  = -fsanitize=address,leak,undefined
 
+ifndef BEAR
+CFLAGS += -fanalyzer
+endif
 ifdef RELEASE
 	CFLAGS  += -O2
 else
-	CFLAGS  += -g3 -Og $(AFLAGS)
-	LDFLAGS += $(AFLAGS)
+	CFLAGS  += -g3 -Og $(SANFLAGS)
+	LDFLAGS += $(SANFLAGS)
 endif
 
 # if you have a file named as the execname, that is a sufficient target to
