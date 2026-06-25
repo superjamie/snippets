@@ -70,7 +70,7 @@ static char *text_create_wrapped(const char *text, size_t data_size, size_t targ
 {
 	char *buffer = NULL;
 	if (target < 2) {
-		errno = -EINVAL;
+		errno = EINVAL;
 		goto out;
 	}
 
@@ -112,7 +112,8 @@ static char *text_create_wrapped(const char *text, size_t data_size, size_t targ
 			memmove(&buffer[hyphen + 2], &buffer[hyphen], bytes_left);
 			buffer[hyphen] = '-';
 			buffer[hyphen + 1] = '\n';
-			limit += 2;
+			limit += 1;
+			data_size += 2;
 		}
 		start = limit + 1;
 		limit = start + target;
@@ -121,6 +122,7 @@ static char *text_create_wrapped(const char *text, size_t data_size, size_t targ
 out:
 	return buffer;
 }
+
 int main(int argc, char **argv)
 {
 	int retval = 0;
